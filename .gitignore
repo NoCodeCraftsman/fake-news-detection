@@ -1,0 +1,73 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+env_nlp/
+env_api/
+env_frontend/
+env_pipeline/
+env_preprocessing/
+env_explain/
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints
+
+# Data files (TOO LARGE)
+data/raw/
+data/synthetic/
+data/raw data/
+data/processed/*.csv
+data/processed/*.xlsx
+data/processed/hf_news_combined/
+!data/processed/.gitkeep
+
+# Model checkpoints (TOO LARGE)
+models/
+!models/.gitkeep
+results/
+!results/.gitkeep
+tmp_trainer/
+
+# Logs (EXCEPT YOUR LATEST EVALUATION)
+logs/evaluation_results_*/
+!logs/evaluation_results_20250913_070858_wellfake_both_models/
+
+# Cache
+.pytest_cache/
+*.log
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local
+
+# Temp files
+project_structure.txt
+*.bak
+~$*
+
+# Source folder (not needed for GitHub)
+src/
+!src/__init__.py
+src/**
+CUDA_check.py
+CUDA check.py

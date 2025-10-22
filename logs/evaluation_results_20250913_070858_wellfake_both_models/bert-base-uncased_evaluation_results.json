@@ -1,0 +1,58 @@
+{
+    "model": "bert-base-uncased",
+    "checkpoint_path": "L:\\Important\\MCA\\Mini Project\\fake_news_detection\\results\\trial_2\\checkpoint-3066",
+    "trial": "trial_2",
+    "eval_results": {
+        "eval_loss": 0.10654999315738678,
+        "eval_accuracy": 0.9600261054005548,
+        "eval_precision": 0.9665790461885092,
+        "eval_recall": 0.9428571428571428,
+        "eval_f1": 0.954570739847951,
+        "eval_runtime": 216.4745,
+        "eval_samples_per_second": 28.313,
+        "eval_steps_per_second": 3.543
+    },
+    "classification_report": {
+        "0": {
+            "precision": 0.9549913444893249,
+            "recall": 0.9738158281847602,
+            "f1-score": 0.964311726147123,
+            "support": 3399.0
+        },
+        "1": {
+            "precision": 0.9665790461885092,
+            "recall": 0.9428571428571428,
+            "f1-score": 0.954570739847951,
+            "support": 2730.0
+        },
+        "accuracy": 0.9600261054005548,
+        "macro avg": {
+            "precision": 0.960785195338917,
+            "recall": 0.9583364855209515,
+            "f1-score": 0.959441232997537,
+            "support": 6129.0
+        },
+        "weighted avg": {
+            "precision": 0.9601527779431956,
+            "recall": 0.9600261054005548,
+            "f1-score": 0.9599728629399539,
+            "support": 6129.0
+        }
+    },
+    "confusion_matrix": [
+        [
+            3310,
+            89
+        ],
+        [
+            156,
+            2574
+        ]
+    ],
+    "sample_count": 6129,
+    "accuracy": 0.9600261054005548,
+    "f1_score": 0.954570739847951,
+    "precision": 0.9665790461885092,
+    "recall": 0.9428571428571428,
+    "plot_path": "L:\\Important\\MCA\\Mini Project\\fake_news_detection\\logs\\evaluation_results_20250913_070858_wellfake_both_models\\bert-base-uncased_confusion_matrix.png"
+}

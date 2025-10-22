@@ -1,0 +1,29 @@
+{
+  "folders": [
+    {
+      "name": "Backend (NLP + Training)",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/env_nlp/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}/src",
+      "${workspaceFolder}/api",
+      "${workspaceFolder}/frontend"
+    ],
+    "terminal.integrated.profiles.windows": {
+      "Env NLP": {
+        "path": "${workspaceFolder}/env_nlp/Scripts/activate",
+        "icon": "flame"
+      },
+      "Env Pipeline": {
+        "path": "${workspaceFolder}/env_pipeline/Scripts/activate",
+        "icon": "rocket"
+      }
+    },
+    "terminal.integrated.defaultProfile.windows": "Env NLP"
+  }
+}

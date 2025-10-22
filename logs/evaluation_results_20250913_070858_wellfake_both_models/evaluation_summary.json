@@ -1,0 +1,74 @@
+{
+    "evaluation_timestamp": "2025-09-13T07:23:28.236635",
+    "dataset_info": {
+        "test_samples": 6129,
+        "label_distribution": {
+            "0": 3399,
+            "1": 2730
+        },
+        "average_text_length": 3172.7774514602706,
+        "dataset_source": "WELFake_preprocessed_test_set"
+    },
+    "models_evaluated": [
+        "bert-base-uncased",
+        "roberta-base"
+    ],
+    "results": {
+        "bert-base-uncased": {
+            "accuracy": 0.9600261054005548,
+            "f1_score": 0.954570739847951,
+            "precision": 0.9665790461885092,
+            "recall": 0.9428571428571428,
+            "confusion_matrix": [
+                [
+                    3310,
+                    89
+                ],
+                [
+                    156,
+                    2574
+                ]
+            ],
+            "checkpoint_path": "L:\\Important\\MCA\\Mini Project\\fake_news_detection\\results\\trial_2\\checkpoint-3066",
+            "trial": "trial_2"
+        },
+        "roberta-base": {
+            "accuracy": 0.9792788383096753,
+            "f1_score": 0.9769468143038664,
+            "precision": 0.9683339330694495,
+            "recall": 0.9857142857142858,
+            "confusion_matrix": [
+                [
+                    3311,
+                    88
+                ],
+                [
+                    39,
+                    2691
+                ]
+            ],
+            "checkpoint_path": "L:\\Important\\MCA\\Mini Project\\fake_news_detection\\results\\trial_0\\checkpoint-12258",
+            "trial": "trial_0"
+        }
+    },
+    "comparison": {
+        "best_accuracy_model": "roberta-base",
+        "best_accuracy_score": 0.9792788383096753,
+        "best_f1_model": "roberta-base",
+        "best_f1_score": 0.9769468143038664,
+        "accuracy_difference": 0.01925273290912055,
+        "f1_difference": 0.022376074455915385
+    },
+    "summary_statistics": {
+        "models_count": 2,
+        "successful_evaluations": 2,
+        "mean_accuracy": 0.969652471855115,
+        "std_accuracy": 0.009626366454560276,
+        "mean_f1": 0.9657587770759087,
+        "std_f1": 0.011188037227957692,
+        "max_accuracy": 0.9792788383096753,
+        "max_f1": 0.9769468143038664,
+        "min_accuracy": 0.9600261054005548,
+        "min_f1": 0.954570739847951
+    }
+}

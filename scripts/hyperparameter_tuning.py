@@ -3,7 +3,6 @@ import subprocess
 import sys
 import logging
 
-# 1) Ensure required packages are installed
 required = [
     "optuna>=3.0.0",
     "transformers>=4.35.0",
@@ -31,16 +30,13 @@ from transformers import (
     TrainingArguments,
 )
 
-# 2) Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-# 3) Paths
 PROJECT_ROOT = Path("L:/Important/MCA/Mini Project/fake_news_detection")
 TRAIN_CSV = PROJECT_ROOT / "data" / "processed" / "train.csv"
 VAL_CSV   = PROJECT_ROOT / "data" / "processed" / "validation.csv"
 
-# 4) Load datasets
 def load_hf_dataset(csv_path):
     df = pd.read_csv(csv_path)
     df["text"] = df["text"].astype(str).fillna("")
@@ -50,7 +46,6 @@ def load_hf_dataset(csv_path):
 train_ds = load_hf_dataset(TRAIN_CSV)
 val_ds   = load_hf_dataset(VAL_CSV)
 
-# 5) Metric function
 def compute_metrics(eval_pred):
     preds = np.argmax(eval_pred.predictions, axis=1)
     labels = eval_pred.label_ids
@@ -58,7 +53,6 @@ def compute_metrics(eval_pred):
     acc = accuracy_score(labels, preds)
     return {"accuracy": acc, "precision": precision, "recall": recall, "f1": f1}
 
-# 6) Tokenization helper
 def tokenize_batch(examples, tokenizer, max_length):
     return tokenizer(
         examples["text"],
@@ -67,7 +61,6 @@ def tokenize_batch(examples, tokenizer, max_length):
         max_length=max_length,
     )
 
-# 7) Objective with checkpoint check
 def objective(trial):
     model_name    = trial.suggest_categorical("model_name", ["bert-base-uncased", "roberta-base"])
     learning_rate = trial.suggest_loguniform("learning_rate", 1e-6, 5e-5)
@@ -79,13 +72,11 @@ def objective(trial):
     logger.info(f"Trial {trial.number}: model={model_name}, lr={learning_rate:.2e}, "
                 f"batch={batch_size}, epochs={epochs}, max_len={max_length}")
 
-    # If a checkpoint exists in output_dir, skip training and just evaluate
     checkpoint_dirs = sorted(output_dir.glob("checkpoint-*"), key=lambda d: int(d.name.split('-')[1])) \
                      if output_dir.exists() else []
     if checkpoint_dirs:
         last_ckpt = checkpoint_dirs[-1]
         logger.info(f"Found existing checkpoint {last_ckpt}, skipping training")
-        # Load model and tokenizer from this checkpoint and evaluate
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSequenceClassification.from_pretrained(last_ckpt)
         def tokenize_fn(ex): return tokenizer(ex["text"], padding="max_length", truncation=True, max_length=max_length)
@@ -97,7 +88,6 @@ def objective(trial):
         logger.info(f"Trial {trial.number} (existing) F1={f1:.4f}")
         return f1
 
-    # Otherwise, perform normal training
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model     = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
 

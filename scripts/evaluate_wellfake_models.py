@@ -11,7 +11,6 @@ import re
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -61,7 +60,6 @@ def find_all_model_checkpoints():
         "roberta-base": []
     }
 
-    # Scan all trial directories
     for trial_dir in sorted(results_dir.glob("trial_*")):
         logger.info(f"Scanning {trial_dir}")
 
@@ -81,7 +79,6 @@ def find_all_model_checkpoints():
                 config_data = json.load(f)
                 model_name = config_data.get("_name_or_path", "")
 
-            # Determine model type
             if "bert" in model_name.lower() and "roberta" not in model_name.lower():
                 model_checkpoints["bert-base-uncased"].append({
                     "path": checkpoint,
@@ -104,7 +101,6 @@ def find_all_model_checkpoints():
             logger.error(f"Error reading config from {config_file}: {e}")
             continue
 
-    # Log summary
     for model_type, checkpoints in model_checkpoints.items():
         logger.info(f"Found {len(checkpoints)} checkpoints for {model_type}")
 
@@ -115,8 +111,7 @@ def select_best_checkpoint(model_type, checkpoints):
     if not checkpoints:
         return None
 
-    # For now, select the first available checkpoint
-    # In future, could implement more sophisticated selection (e.g., based on validation scores)
+
     selected = checkpoints[0]
     logger.info(f"Selected checkpoint for {model_type}: {selected['path']} (from {selected['trial']})")
     return selected
@@ -151,7 +146,6 @@ def evaluate_model(model_name, checkpoint_info, test_texts, test_labels, results
     logger.info(f"Evaluating {model_name} from {checkpoint_path} ({trial_name})")
 
     try:
-        # Load tokenizer from original model name, model from checkpoint
         logger.info(f"Loading tokenizer for {model_name}")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
 
@@ -161,7 +155,6 @@ def evaluate_model(model_name, checkpoint_info, test_texts, test_labels, results
         def tokenize_fn(examples):
             return tokenizer(examples["text"], padding="max_length", truncation=True, max_length=512)
 
-        # Create test dataset
         test_ds = Dataset.from_dict({"text": test_texts, "label": test_labels}).map(tokenize_fn, batched=True)
 
         trainer = Trainer(model=model, compute_metrics=compute_metrics)
@@ -198,7 +191,6 @@ def evaluate_model(model_name, checkpoint_info, test_texts, test_labels, results
             "plot_path": plot_path
         }
 
-        # Save individual model results
         model_file = results_folder / f"{model_name.replace('/', '-')}_evaluation_results.json"
         with open(model_file, 'w') as f:
             json.dump(detailed_results, f, indent=4)
@@ -232,7 +224,6 @@ def create_summary_report(all_results, results_folder, df_test):
         "summary_statistics": {}
     }
 
-    # Process results for each model
     accuracies = []
     f1_scores = []
 
@@ -252,7 +243,6 @@ def create_summary_report(all_results, results_folder, df_test):
             accuracies.append(results["accuracy"])
             f1_scores.append(results["f1_score"])
 
-    # Calculate summary statistics
     if accuracies:
         summary["summary_statistics"] = {
             "models_count": len(all_results),
@@ -267,7 +257,6 @@ def create_summary_report(all_results, results_folder, df_test):
             "min_f1": float(min(f1_scores))
         }
 
-        # Find best models
         best_acc_model = max(summary["results"].keys(), key=lambda x: summary["results"][x]["accuracy"])
         best_f1_model = max(summary["results"].keys(), key=lambda x: summary["results"][x]["f1_score"])
 
@@ -280,7 +269,6 @@ def create_summary_report(all_results, results_folder, df_test):
             "f1_difference": max(f1_scores) - min(f1_scores)
         }
 
-    # Save summary report
     summary_file = results_folder / "evaluation_summary.json"
     with open(summary_file, 'w') as f:
         json.dump(summary, f, indent=4)
@@ -304,28 +292,23 @@ def create_comparison_plot(all_results, results_folder):
             accuracies.append(results["accuracy"])
             f1_scores.append(results["f1_score"])
 
-    # Create comparison plot
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-    # Accuracy comparison
     bars1 = ax1.bar(models, accuracies, color=['#1f77b4', '#ff7f0e'])
     ax1.set_title('Model Accuracy Comparison', fontsize=14, pad=15)
     ax1.set_ylabel('Accuracy', fontsize=12)
     ax1.set_ylim(0, 1)
 
-    # Add value labels on bars
     for bar, acc in zip(bars1, accuracies):
         height = bar.get_height()
         ax1.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                 f'{acc:.3f}', ha='center', va='bottom', fontsize=11)
 
-    # F1 Score comparison  
     bars2 = ax2.bar(models, f1_scores, color=['#1f77b4', '#ff7f0e'])
     ax2.set_title('Model F1 Score Comparison', fontsize=14, pad=15)
     ax2.set_ylabel('F1 Score', fontsize=12)
     ax2.set_ylim(0, 1)
 
-    # Add value labels on bars
     for bar, f1 in zip(bars2, f1_scores):
         height = bar.get_height()
         ax2.text(bar.get_x() + bar.get_width()/2., height + 0.01,
@@ -349,7 +332,6 @@ def main():
     logger.info(f"🚀 Starting evaluation of BERT and RoBERTa models")
     logger.info(f"Results will be saved to: {results_folder}")
 
-    # Load test dataset
     try:
         df_test = load_test_dataset()
     except FileNotFoundError as e:
@@ -359,14 +341,12 @@ def main():
     test_texts = df_test["text"].tolist()
     test_labels = df_test["label"].tolist()
 
-    # Find all available model checkpoints
     logger.info("\n" + "="*50)
     logger.info("DISCOVERING MODEL CHECKPOINTS")
     logger.info("="*50)
 
     all_checkpoints = find_all_model_checkpoints()
 
-    # Check if we found checkpoints for both models
     models_to_evaluate = ["bert-base-uncased", "roberta-base"]
     all_results = {}
 
@@ -383,10 +363,8 @@ def main():
             all_results[model_name] = None
             continue
 
-        # Select best checkpoint for this model
         selected_checkpoint = select_best_checkpoint(model_name, checkpoints)
 
-        # Evaluate the model
         result = evaluate_model(
             model_name, 
             selected_checkpoint, 
@@ -397,7 +375,6 @@ def main():
 
         all_results[model_name] = result
 
-    # Create summary report
     logger.info("\n" + "="*50)
     logger.info("CREATING SUMMARY REPORT")
     logger.info("="*50)
@@ -410,7 +387,6 @@ def main():
     logger.info("\n🎉 EVALUATION COMPLETE!")
     logger.info(f"📁 All results saved in: {results_folder}")
 
-    # Print final summary
     print("\n" + "="*70)
     print("FINAL EVALUATION RESULTS SUMMARY")
     print("="*70)
